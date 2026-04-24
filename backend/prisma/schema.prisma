@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  xp           Int      @default(0)
+  streak       Int      @default(0)
+  lastActive   DateTime @default(now())
+  avatarColor  String   @default("#7C3AED")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  progress     UserProgress[]
+  quizSessions QuizSession[]
+
+  @@map("users")
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  number      Int      @unique
+  title       String
+  content     String   @db.Text
+  category    Category
+  keyConcepts String[]
+  createdAt   DateTime @default(now())
+
+  quizQuestions QuizQuestion[]
+  userProgress  UserProgress[]
+
+  @@map("questions")
+}
+
+enum Category {
+  CRVENA
+  NARANCASTA
+  ZUTA
+  ZELENA
+}
+
+model QuizQuestion {
+  id         Int    @id @default(autoincrement())
+  questionId Int
+  text       String
+
+  question Question      @relation(fields: [questionId], references: [id])
+  options  QuizOption[]
+  answers  SessionAnswer[]
+
+  @@map("quiz_questions")
+}
+
+model QuizOption {
+  id             Int     @id @default(autoincrement())
+  quizQuestionId Int
+  text           String
+  isCorrect      Boolean @default(false)
+
+  quizQuestion QuizQuestion    @relation(fields: [quizQuestionId], references: [id])
+  answers      SessionAnswer[]
+
+  @@map("quiz_options")
+}
+
+model UserProgress {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  questionId    Int
+  correctCount  Int      @default(0)
+  totalAttempts Int      @default(0)
+  masteryLevel  Int      @default(0)
+  lastAttempted DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId])
+  @@map("user_progress")
+}
+
+model QuizSession {
+  id             String    @id @default(uuid())
+  userId         String
+  score          Int       @default(0)
+  totalQuestions Int
+  timeTaken      Int       @default(0)
+  xpEarned       Int       @default(0)
+  category       Category?
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  user    User            @relation(fields: [userId], references: [id])
+  answers SessionAnswer[]
+
+  @@map("quiz_sessions")
+}
+
+model SessionAnswer {
+  id             Int     @id @default(autoincrement())
+  sessionId      String
+  quizQuestionId Int
+  selectedId     Int?
+  isCorrect      Boolean @default(false)
+  timeSpent      Int     @default(0)
+
+  session      QuizSession  @relation(fields: [sessionId], references: [id])
+  quizQuestion QuizQuestion @relation(fields: [quizQuestionId], references: [id])
+  selected     QuizOption?  @relation(fields: [selectedId], references: [id])
+
+  @@map("session_answers")
+}
