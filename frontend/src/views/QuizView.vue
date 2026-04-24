@@ -15,11 +15,15 @@ const currentIdx = ref(0)
 const answers = ref<any[]>([])
 const selectedOptionId = ref<number | null>(null)
 const feedbackData = ref<{ isCorrect: boolean; correctOptionId: number } | null>(null)
+const TOTAL_MS = 30000
 const timeLeft = ref(30)
-const timer = ref<any>(null)
+const elapsedMs = ref(0)
+const rafId = ref<number | null>(null)
 const finalScore = ref<{ score: number; totalQuestions: number; xpEarned: number; isPerfect: boolean } | null>(null)
 const startTime = ref(0)
 const error = ref('')
+
+const timerPercent = computed(() => Math.max(0, ((TOTAL_MS - elapsedMs.value) / TOTAL_MS) * 100))
 
 const CATS = [
   { value: '', label: 'Sva pitanja', desc: '22 teme, sve kategorije', icon: '🎯' },
@@ -32,17 +36,29 @@ const CATS = [
 const currentQ = computed(() => questions.value[currentIdx.value])
 const progress = computed(() => ((currentIdx.value) / questions.value.length) * 100)
 
+function stopTimer() {
+  if (rafId.value !== null) {
+    cancelAnimationFrame(rafId.value)
+    rafId.value = null
+  }
+}
+
 function startTimer() {
-  timeLeft.value = 30
+  stopTimer()
   startTime.value = Date.now()
-  clearInterval(timer.value)
-  timer.value = setInterval(() => {
-    timeLeft.value--
-    if (timeLeft.value <= 0) {
-      clearInterval(timer.value)
+  elapsedMs.value = 0
+  timeLeft.value = 30
+  const tick = () => {
+    elapsedMs.value = Date.now() - startTime.value
+    timeLeft.value = Math.max(0, Math.ceil((TOTAL_MS - elapsedMs.value) / 1000))
+    if (elapsedMs.value >= TOTAL_MS) {
+      stopTimer()
       handleAnswer(null)
+      return
     }
-  }, 1000)
+    rafId.value = requestAnimationFrame(tick)
+  }
+  rafId.value = requestAnimationFrame(tick)
 }
 
 async function startQuiz() {
@@ -65,7 +81,7 @@ async function startQuiz() {
 }
 
 async function handleAnswer(optionId: number | null) {
-  clearInterval(timer.value)
+  stopTimer()
   selectedOptionId.value = optionId
   const timeSpent = Math.round((Date.now() - startTime.value) / 1000)
 
@@ -122,7 +138,7 @@ function reset() {
   finalScore.value = null
   feedbackData.value = null
   selectedOptionId.value = null
-  clearInterval(timer.value)
+  stopTimer()
 }
 
 function optionClass(optId: number) {
@@ -134,7 +150,7 @@ function optionClass(optId: number) {
   return 'border-[#30363D] opacity-50'
 }
 
-onUnmounted(() => clearInterval(timer.value))
+onUnmounted(stopTimer)
 </script>
 
 <template>
@@ -209,9 +225,9 @@ onUnmounted(() => clearInterval(timer.value))
         <!-- Timer bar -->
         <div class="w-full bg-bg-card rounded-full h-1 mb-6 overflow-hidden">
           <div
-            class="h-full rounded-full transition-all duration-1000"
+            class="h-full rounded-full"
             :style="{
-              width: `${(timeLeft / 30) * 100}%`,
+              width: `${timerPercent}%`,
               background: timeLeft <= 10 ? '#EF4444' : '#7C3AED',
             }"
           />
@@ -308,7 +324,7 @@ onUnmounted(() => clearInterval(timer.value))
           <button @click="reset" class="btn-ghost flex-1">
             Novi kviz
           </button>
-          <router-link to="/ucenje" class="btn-primary flex-1 text-center">
+          <router-link to="/ucenje/brzo" class="btn-primary flex-1 text-center">
             Ponovi gradivo
           </router-link>
         </div>

@@ -102,7 +102,7 @@ function formatDate(d: string) {
             </div>
             <div>
               <div class="font-semibold text-white group-hover:text-brand transition-colors">Učenje</div>
-              <div class="text-sm text-gray-500">Prouči svih 22 pitanja</div>
+              <div class="text-sm text-gray-500">Brzo učenje ili pitanja iz skripte</div>
             </div>
             <svg class="ml-auto w-4 h-4 text-gray-600 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
