@@ -43,7 +43,7 @@ const level = () => levelFor(auth.user?.xp ?? 0)
           :key="item.to"
           :to="item.to"
           class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-          :class="route.path === item.to
+          :class="(route.path === item.to || (item.to !== '/' && route.path.startsWith(item.to + '/')))
             ? 'bg-brand/20 text-brand'
             : 'text-gray-400 hover:text-gray-100 hover:bg-bg-card'"
         >
@@ -82,7 +82,7 @@ const level = () => levelFor(auth.user?.xp ?? 0)
         :to="item.to"
         @click="mobileOpen = false"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-1"
-        :class="route.path === item.to ? 'bg-brand/20 text-brand' : 'text-gray-400'"
+        :class="(route.path === item.to || (item.to !== '/' && route.path.startsWith(item.to + '/'))) ? 'bg-brand/20 text-brand' : 'text-gray-400'"
       >
         <span>{{ item.icon }}</span>
         <span>{{ item.label }}</span>

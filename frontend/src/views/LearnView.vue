@@ -59,7 +59,7 @@ function toggle(id: number) {
 
     <div class="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
       <div class="mb-6">
-        <h1 class="text-2xl font-bold text-white">Materijal za učenje</h1>
+        <h1 class="text-2xl font-bold text-white">Brzo učenje</h1>
         <p class="text-gray-500 text-sm mt-1">22 ključna pitanja za ispit · klikni na pitanje za detalje</p>
       </div>
 

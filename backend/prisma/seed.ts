@@ -1,5 +1,4 @@
 import { PrismaClient, Category } from '@prisma/client'
-import * as bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -990,49 +989,6 @@ IF (kupac pošalje 1 ETH) THEN (automatski pošalji vlasništvo)
 
 async function main() {
   console.log('🌱 Starting seed...')
-
-  // Demo user
-  const hash = await bcrypt.hash('demo123', 10)
-  await prisma.user.upsert({
-    where: { email: 'demo@drs.hr' },
-    update: {},
-    create: {
-      username: 'Demo Student',
-      email: 'demo@drs.hr',
-      passwordHash: hash,
-      xp: 1250,
-      streak: 3,
-      avatarColor: '#7C3AED',
-    },
-  })
-
-  await prisma.user.upsert({
-    where: { email: 'ana@drs.hr' },
-    update: {},
-    create: {
-      username: 'Ana Horvat',
-      email: 'ana@drs.hr',
-      passwordHash: hash,
-      xp: 2800,
-      streak: 7,
-      avatarColor: '#EC4899',
-    },
-  })
-
-  await prisma.user.upsert({
-    where: { email: 'marko@drs.hr' },
-    update: {},
-    create: {
-      username: 'Marko Perić',
-      email: 'marko@drs.hr',
-      passwordHash: hash,
-      xp: 950,
-      streak: 1,
-      avatarColor: '#10B981',
-    },
-  })
-
-  console.log('✅ Demo users created')
 
   // Questions + quiz questions
   for (const q of questions) {
