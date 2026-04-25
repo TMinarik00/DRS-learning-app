@@ -42,7 +42,7 @@ async function submit() {
         <form @submit.prevent="submit" class="space-y-4">
           <div>
             <label class="block text-xs text-gray-400 mb-1.5 font-medium">Email</label>
-            <input v-model="email" type="email" placeholder="tin@fer.hr" class="input" required />
+            <input v-model="email" type="email" placeholder="ime@fer.hr" class="input" required />
           </div>
           <div>
             <label class="block text-xs text-gray-400 mb-1.5 font-medium">Lozinka</label>
@@ -68,7 +68,6 @@ async function submit() {
         <router-link to="/register" class="text-brand hover:underline font-medium">Registriraj se</router-link>
       </p>
 
-      <p class="text-center text-xs text-gray-600 mt-4">Demo: demo@drs.hr / demo123</p>
     </div>
   </div>
 </template>

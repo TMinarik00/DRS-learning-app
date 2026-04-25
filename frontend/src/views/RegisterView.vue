@@ -42,11 +42,11 @@ async function submit() {
         <form @submit.prevent="submit" class="space-y-4">
           <div>
             <label class="block text-xs text-gray-400 mb-1.5 font-medium">Korisničko ime</label>
-            <input v-model="username" type="text" placeholder="tin_minarik" class="input" required minlength="3" />
+            <input v-model="username" type="text" placeholder="korisnicko_ime" class="input" required minlength="3" />
           </div>
           <div>
             <label class="block text-xs text-gray-400 mb-1.5 font-medium">Email</label>
-            <input v-model="email" type="email" placeholder="tin@fer.hr" class="input" required />
+            <input v-model="email" type="email" placeholder="ime@fer.hr" class="input" required />
           </div>
           <div>
             <label class="block text-xs text-gray-400 mb-1.5 font-medium">Lozinka</label>
