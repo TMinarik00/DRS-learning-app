@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
-const router = useRouter()
 const route = useRoute()
 const mobileOpen = ref(false)
 
@@ -13,7 +12,6 @@ const nav = [
   { to: '/ucenje', label: 'Učenje', icon: '📖' },
   { to: '/kviz', label: 'Kviz', icon: '⚡' },
   { to: '/ljestvica', label: 'Ljestvica', icon: '🏆' },
-  { to: '/profil', label: 'Profil', icon: '👤' },
 ]
 
 function levelFor(xp: number) {
@@ -57,14 +55,15 @@ const level = () => levelFor(auth.user?.xp ?? 0)
           <span class="text-gray-500">Razina {{ level().n }}</span>
           <span class="font-semibold text-brand">{{ auth.user?.xp.toLocaleString() }} XP</span>
         </div>
-        <button
-          @click="auth.logout"
-          class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity"
+        <router-link
+          to="/profil"
+          class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-all ring-offset-2 ring-offset-bg-secondary hover:scale-105"
+          :class="route.path === '/profil' ? 'ring-2 ring-brand' : 'hover:opacity-80'"
           :style="{ background: auth.user?.avatarColor }"
-          :title="`${auth.user?.username} — Odjavi se`"
+          :title="`${auth.user?.username} — Profil`"
         >
           {{ auth.user?.username?.charAt(0).toUpperCase() }}
-        </button>
+        </router-link>
         <!-- Mobile menu toggle -->
         <button @click="mobileOpen = !mobileOpen" class="md:hidden text-gray-400 hover:text-white p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
